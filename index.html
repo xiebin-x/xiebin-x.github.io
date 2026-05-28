@@ -298,7 +298,7 @@
         let currentFilter = 'all';
 
         // 响应式图片：手机用 1200px，桌面用 2400px
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
         function imgSrc(path) {
             if (isMobile) return path.replace('images/', 'images/mobile/');
             return path;
