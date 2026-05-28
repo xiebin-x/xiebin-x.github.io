@@ -240,15 +240,33 @@
             .card-overlay { opacity: 1; padding: 16px; }
             .c-title { font-size: 1rem; }
 
-            /* 详情页 */
-            #detail-view { display: block; overflow-y: auto; }
-            .d-gallery { height: 55vh; }
-            .d-main-stage { padding: 20px; }
-            .d-filmstrip { height: 80px; gap: 10px; }
-            .thumb-item { height: 40px; min-width: 40px; }
-            .d-info { height: auto; padding: 30px 20px 80px; }
+            /* 详情页 — 手机全屏图片 */
+            #detail-view { display: block; overflow: hidden; }
+            .d-gallery { height: 100vh; border-right: none; }
+            .d-main-stage { padding: 0; height: 100vh; }
+            .d-filmstrip { display: none; }
+            .d-info {
+                position: fixed; bottom: 0; left: 0; right: 0;
+                height: auto; max-height: 65vh; overflow-y: auto;
+                padding: 40px 24px 52px;
+                background: linear-gradient(to top, rgba(0,0,0,0.97) 80%, transparent);
+                transform: translateY(100%);
+                transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                z-index: 210; justify-content: flex-start;
+            }
+            .d-info.m-visible { transform: translateY(0); }
+            .d-dots {
+                position: fixed; bottom: 20px; left: 0; right: 0;
+                display: flex; justify-content: center; gap: 6px;
+                z-index: 220; pointer-events: none;
+            }
+            .d-dot {
+                width: 5px; height: 5px; border-radius: 50%;
+                background: rgba(255,255,255,0.3); transition: 0.25s;
+            }
+            .d-dot.active { background: #fff; width: 16px; border-radius: 3px; }
             .d-title-cn { font-size: 2rem; }
-            .d-close-btn { top: 16px; right: 16px; }
+            .d-close-btn { top: 16px; right: 16px; z-index: 230; }
         }
     </style>
 </head>
@@ -276,6 +294,7 @@
             </div>
             <div class="d-filmstrip" id="d-filmstrip"></div>
         </div>
+        <div id="d-dots" class="d-dots"></div>
         <div class="d-info">
             <div class="d-title-cn" id="d-title"></div>
             <div class="d-title-en">IMAGE ARCHIVE — VOL.1</div>
@@ -376,19 +395,89 @@
             full.src = encodeURI(path);
         }
 
+        // 手机端详情页状态
+        let mDetailImages = [];
+        let mDetailIdx = 0;
+        let mInfoVisible = false;
+        let mSwipeReady = false;
+
+        function isMobileView() { return window.innerWidth <= 768; }
+
+        function renderDots(images, idx) {
+            const dots = document.getElementById('d-dots');
+            if (!dots) return;
+            if (!isMobileView() || images.length <= 1) { dots.innerHTML = ''; return; }
+            dots.innerHTML = images.map((_, i) =>
+                `<div class="d-dot${i === idx ? ' active' : ''}"></div>`
+            ).join('');
+        }
+
+        function mNavigate(dir) {
+            const next = mDetailIdx + dir;
+            if (next < 0 || next >= mDetailImages.length) return;
+            mDetailIdx = next;
+            loadMainImage(document.getElementById('d-img'), mDetailImages[mDetailIdx]);
+            renderDots(mDetailImages, mDetailIdx);
+            document.querySelectorAll('.thumb-item').forEach((t, i) =>
+                t.classList.toggle('active', i === mDetailIdx)
+            );
+        }
+
+        function mToggleInfo() {
+            mInfoVisible = !mInfoVisible;
+            document.querySelector('.d-info').classList.toggle('m-visible', mInfoVisible);
+        }
+
+        function setupMobileSwipe() {
+            if (mSwipeReady) return;
+            mSwipeReady = true;
+            const detail = document.getElementById('detail-view');
+            let tx = 0, ty = 0, hasMoved = false;
+
+            detail.addEventListener('touchstart', (e) => {
+                tx = e.touches[0].clientX;
+                ty = e.touches[0].clientY;
+                hasMoved = false;
+            }, { passive: true });
+
+            detail.addEventListener('touchmove', () => { hasMoved = true; }, { passive: true });
+
+            detail.addEventListener('touchend', (e) => {
+                const dx = e.changedTouches[0].clientX - tx;
+                const dy = e.changedTouches[0].clientY - ty;
+                const adx = Math.abs(dx), ady = Math.abs(dy);
+
+                if (adx > ady && adx > 40) {
+                    // 左右滑动切图
+                    mNavigate(dx < 0 ? 1 : -1);
+                } else if (dy > 80 && adx < 60) {
+                    // 下滑关闭
+                    closeDetail();
+                } else if (!hasMoved || (adx < 10 && ady < 10)) {
+                    // 点击图片区域切换信息面板
+                    const info = document.querySelector('.d-info');
+                    if (!info.contains(e.target)) mToggleInfo();
+                }
+            }, { passive: true });
+        }
+
         function openDetail(p) {
             const mainImg = document.getElementById('d-img');
             const strip = document.getElementById('d-filmstrip');
-            loadMainImage(mainImg, p.cover);
+
+            mDetailImages = [p.cover].concat(p.series || []);
+            mDetailIdx = 0;
+            mInfoVisible = false;
+
+            loadMainImage(mainImg, mDetailImages[0]);
             document.getElementById('d-title').innerText = p.title;
             document.getElementById('d-year').innerText = p.year || '2026';
             document.getElementById('d-cat').innerText = p.category;
             document.getElementById('d-desc').innerText = p.desc;
 
-            let allImages = [p.cover];
-            if (p.series) allImages = allImages.concat(p.series);
+            // 桌面端胶片条
             strip.innerHTML = '';
-            allImages.forEach((src, index) => {
+            mDetailImages.forEach((src, index) => {
                 const thumb = document.createElement('img');
                 const mob = encodeURI(mobilePath(src));
                 const desk = encodeURI(src);
@@ -397,18 +486,27 @@
                 thumb.sizes = '80px';
                 thumb.className = 'thumb-item' + (index === 0 ? ' active' : '');
                 thumb.onclick = function() {
+                    mDetailIdx = index;
                     loadMainImage(mainImg, src);
+                    renderDots(mDetailImages, mDetailIdx);
                     document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
                     thumb.classList.add('active');
                 };
                 strip.appendChild(thumb);
             });
+
+            // 手机端
+            document.querySelector('.d-info').classList.remove('m-visible');
+            renderDots(mDetailImages, 0);
+            if (isMobileView()) setupMobileSwipe();
+
             document.getElementById('detail-view').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function closeDetail() {
             document.getElementById('detail-view').classList.remove('active');
+            document.querySelector('.d-info').classList.remove('m-visible');
             document.body.style.overflow = 'auto';
         }
 
