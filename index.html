@@ -297,11 +297,31 @@
         let projects = (typeof window.portfolioData !== 'undefined') ? window.portfolioData : [];
         let currentFilter = 'all';
 
-        // 响应式图片：手机用 1200px，桌面用 2400px
+        // 响应式图片：手机优先使用 1200px，失败后回退桌面图
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
-        function imgSrc(path) {
-            if (isMobile) return path.replace('images/', 'images/mobile/');
-            return path;
+        let lazyObserver = null;
+        let lazyFallbackHandler = null;
+
+        function mobilePath(path) {
+            return path.startsWith('images/') ? path.replace(/^images\//, 'images/mobile/') : path;
+        }
+
+        function responsiveImageSrc(path) {
+            return encodeURI(isMobile ? mobilePath(path) : path);
+        }
+
+        function setResponsiveSrc(img, path) {
+            const desktop = encodeURI(path);
+            const mobile = encodeURI(mobilePath(path));
+
+            img.onerror = () => {
+                if (isMobile && img.src.includes('/images/mobile/')) {
+                    img.onerror = null;
+                    img.src = desktop;
+                }
+            };
+
+            img.src = isMobile ? mobile : desktop;
         }
 
         const CAT_EN = { '风光': 'Landscape', '人文': 'Life', '人像': 'Portrait', '商业': 'Commercial' };
@@ -349,8 +369,7 @@
                             }
                         }, { once: false });
                     }
-                    const fullSrc = encodeURI(imgSrc(p.cover));
-                    card.innerHTML = `<img data-src="${fullSrc}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
+                    card.innerHTML = `<img data-path="${p.cover}" alt="${p.title}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
                 section.appendChild(label);
@@ -366,7 +385,7 @@
             renderTimeline();
         }
 
-        function loadMainImage(mainImg, fullSrc) {
+        function loadMainImage(mainImg, path) {
             const loader = document.getElementById('d-loader');
             mainImg.classList.remove('visible');
             loader.classList.remove('hidden');
@@ -376,13 +395,21 @@
                 loader.classList.add('hidden');
                 mainImg.classList.add('visible');
             };
-            full.src = encodeURI(fullSrc);
+            full.onerror = () => {
+                if (isMobile && full.src.includes('/images/mobile/')) {
+                    full.onerror = () => loader.classList.add('hidden');
+                    full.src = encodeURI(path);
+                    return;
+                }
+                loader.classList.add('hidden');
+            };
+            full.src = responsiveImageSrc(path);
         }
 
         function openDetail(p) {
             const mainImg = document.getElementById('d-img');
             const strip = document.getElementById('d-filmstrip');
-            loadMainImage(mainImg, imgSrc(p.cover));
+            loadMainImage(mainImg, p.cover);
             document.getElementById('d-title').innerText = p.title;
             document.getElementById('d-year').innerText = p.year || '2026';
             document.getElementById('d-cat').innerText = p.category;
@@ -393,11 +420,11 @@
             strip.innerHTML = '';
             allImages.forEach((src, index) => {
                 const thumb = document.createElement('img');
-                thumb.src = encodeURI(imgSrc(src));
+                setResponsiveSrc(thumb, src);
                 thumb.className = 'thumb-item' + (index === 0 ? ' active' : '');
                 thumb.onclick = function() {
                     mainImg.classList.remove('loaded');
-                    loadMainImage(mainImg, imgSrc(src));
+                    loadMainImage(mainImg, src);
                     document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
                     thumb.classList.add('active');
                 };
@@ -412,23 +439,52 @@
             document.body.style.overflow = 'auto';
         }
 
+        function loadImg(img) {
+            if (!img.dataset.path) return;
+            setResponsiveSrc(img, img.dataset.path);
+            img.removeAttribute('data-path');
+        }
+
         function setupLazyLoad() {
-            const imgs = document.querySelectorAll('img[data-src]');
-            if (!('IntersectionObserver' in window)) {
-                imgs.forEach(img => { img.src = img.dataset.src; });
-                return;
+            const imgs = Array.from(document.querySelectorAll('img[data-path]'));
+
+            if (lazyObserver) lazyObserver.disconnect();
+            if (lazyFallbackHandler) {
+                window.removeEventListener('load', lazyFallbackHandler);
+                window.removeEventListener('scroll', lazyFallbackHandler);
+                window.removeEventListener('resize', lazyFallbackHandler);
             }
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                        observer.unobserve(img);
+
+            const loadVisible = () => {
+                imgs.forEach(img => {
+                    if (!img.dataset.path) return;
+                    const rect = img.getBoundingClientRect();
+                    if (rect.top < window.innerHeight + 300 && rect.bottom > -300) {
+                        loadImg(img);
                     }
                 });
-            }, { rootMargin: '200px' });
-            imgs.forEach(img => observer.observe(img));
+            };
+
+            lazyFallbackHandler = loadVisible;
+            requestAnimationFrame(loadVisible);
+            window.addEventListener('load', loadVisible, { once: true });
+            window.addEventListener('scroll', loadVisible, { passive: true });
+            window.addEventListener('resize', loadVisible);
+
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            loadImg(entry.target);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { rootMargin: '300px 0px' });
+                lazyObserver = observer;
+                imgs.forEach(img => observer.observe(img));
+            } else {
+                loadVisible();
+            }
         }
 
         const _origRender = renderTimeline;
