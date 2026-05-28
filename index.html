@@ -363,6 +363,9 @@
         function mobilePath(path) {
             return path.startsWith('images/') ? path.replace(/^images\//, 'images/mobile/') : path;
         }
+        function detailPath(path) {
+            return path.startsWith('images/') ? path.replace(/^images\//, 'images/detail/') : path;
+        }
 
         const CAT_EN = { '风光': 'Landscape', '人文': 'Life', '人像': 'Portrait', '商业': 'Commercial' };
 
@@ -444,7 +447,7 @@
                 mainImg.classList.add('visible');
             };
             full.onerror = () => { loader.classList.add('hidden'); };
-            full.src = encodeURI(isMobileView() ? mobilePath(path) : path);
+            full.src = encodeURI(isMobileView() ? detailPath(path) : path);
         }
 
         // 手机端详情页状态
@@ -562,10 +565,10 @@
             renderDots(mDetailImages, 0);
             if (isMobileView()) {
                 setupMobileSwipe();
-                // 后台预加载系列剩余图片
+                // 后台预加载系列剩余图片（detail 画质版）
                 mDetailImages.slice(1).forEach(src => {
                     const pre = new Image();
-                    pre.src = encodeURI(mobilePath(src));
+                    pre.src = encodeURI(detailPath(src));
                 });
             }
 
