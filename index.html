@@ -125,25 +125,26 @@
         .card:hover img { transform: scale(1.04); }
         .card-overlay {
             position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 20px 22px 22px;
+            padding: 28px 22px 22px;
+            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
             display: flex; flex-direction: column; justify-content: flex-end;
             pointer-events: none;
+            opacity: 0; transition: opacity 0.4s;
         }
+        .card:hover .card-overlay { opacity: 1; }
         .c-title {
             font-size: 1rem; font-weight: 600; margin-bottom: 4px;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.7);
-            opacity: 0; transform: translateY(8px);
-            transition: opacity 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(8px);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .c-meta {
             font-family: var(--font-en-bold); font-size: 10px;
-            color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.6);
-            opacity: 0; transform: translateY(6px);
-            transition: opacity 0.4s 0.05s, transform 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1);
+            color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase;
+            transform: translateY(6px);
+            transition: transform 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .card:hover .c-title { opacity: 1; transform: translateY(0); }
-        .card:hover .c-meta { opacity: 1; transform: translateY(0); }
+        .card:hover .c-title { transform: translateY(0); }
+        .card:hover .c-meta { transform: translateY(0); }
 
         /* --- 4. 详情页 (精致留白重构) --- */
         #detail-view {
@@ -218,11 +219,11 @@
         .d-close-btn:hover { border-color: #fff; background: #fff; color: #000; transform: rotate(90deg); }
 
         .d-title-cn { font-size: 2rem; font-weight: 600; line-height: 1.2; margin-bottom: 12px; }
-        .d-title-en { font-family: var(--font-en-bold); font-size: 11px; color: #3a3a3a; letter-spacing: 4px; margin-bottom: 44px; }
+        .d-title-en { font-family: var(--font-en-bold); font-size: 11px; color: #555; letter-spacing: 4px; margin-bottom: 44px; }
         .d-data-row { display: flex; justify-content: space-between; border-bottom: 1px solid #1a1a1a; padding-bottom: 22px; margin-bottom: 36px; }
-        .data-label { font-size: 10px; color: #444; text-transform: uppercase; margin-bottom: 8px; }
+        .data-label { font-size: 10px; color: #555; text-transform: uppercase; margin-bottom: 8px; }
         .data-val { font-family: var(--font-en-bold); font-size: 20px; color: #aaa; }
-        .d-desc { font-size: 13px; line-height: 2; color: #555; text-align: justify; }
+        .d-desc { font-size: 13px; line-height: 2; color: #777; text-align: justify; }
 
         /* 左右导航按钮 */
         .d-nav-btn {
@@ -265,8 +266,8 @@
                 border-left: none;
             }
             .card-overlay { opacity: 1; padding: 16px; }
-            .c-title { font-size: 1rem; opacity: 1; transform: translateY(0); }
-            .c-meta { opacity: 1; transform: translateY(0); }
+            .c-title { font-size: 1rem; transform: translateY(0); }
+            .c-meta { transform: translateY(0); }
 
             /* 详情页 — 手机全屏图片 */
             #detail-view { display: block; overflow: hidden; }
