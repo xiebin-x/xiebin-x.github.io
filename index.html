@@ -115,36 +115,31 @@
             width: 100%; height: 100%; object-fit: cover;
             transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .card::after {
-            content: ''; position: absolute; inset: 0;
-            background: rgba(0,0,0,0.08);
-            transition: background 0.5s;
-            pointer-events: none;
-        }
-        .card:hover::after { background: rgba(0,0,0,0.28); }
         .card:hover img { transform: scale(1.04); }
         .card-overlay {
-            position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 28px 22px 22px;
-            background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0);
             display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 22px;
             pointer-events: none;
-            opacity: 0; transition: opacity 0.4s;
+            transition: background 0.5s;
         }
-        .card:hover .card-overlay { opacity: 1; }
+        .card:hover .card-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+        }
         .c-title {
             font-size: 1rem; font-weight: 600; margin-bottom: 4px;
-            transform: translateY(8px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(8px); opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s;
         }
         .c-meta {
             font-family: var(--font-en-bold); font-size: 10px;
-            color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase;
-            transform: translateY(6px);
-            transition: transform 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1);
+            color: rgba(255,255,255,0.6); letter-spacing: 2px; text-transform: uppercase;
+            transform: translateY(6px); opacity: 0;
+            transition: transform 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s 0.05s;
         }
-        .card:hover .c-title { transform: translateY(0); }
-        .card:hover .c-meta { transform: translateY(0); }
+        .card:hover .c-title { transform: translateY(0); opacity: 1; }
+        .card:hover .c-meta { transform: translateY(0); opacity: 1; }
 
         /* --- 4. 详情页 (精致留白重构) --- */
         #detail-view {
@@ -265,9 +260,14 @@
                 padding: 12px 12px 40px;
                 border-left: none;
             }
-            .card-overlay { opacity: 1; padding: 16px; }
-            .c-title { font-size: 1rem; transform: translateY(0); }
-            .c-meta { transform: translateY(0); }
+            .card-overlay {
+                opacity: 1; padding: 14px;
+                background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 70%);
+            }
+            .c-title { font-size: 1rem; transform: translateY(0); opacity: 1; }
+            .c-meta { transform: translateY(0); opacity: 1; }
+            .d-nav-btn { display: none; }
+            .year-label { margin-top: 16px; }
 
             /* 详情页 — 手机全屏图片 */
             #detail-view { display: block; overflow: hidden; }
@@ -404,7 +404,7 @@
                     }, { passive: true });
                     const mob = encodeURI(mobilePath(p.cover));
                     const desk = encodeURI(p.cover);
-                    card.innerHTML = `<img src="${mob}" srcset="${mob} 768w, ${desk} 2400w" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" alt="${p.title}"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
+                    card.innerHTML = `<img src="${mob}" srcset="${mob} 768w, ${desk} 2400w" sizes="(max-width: 768px) 50vw, 33vw" alt="${p.title}"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
                 section.appendChild(label);
