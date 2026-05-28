@@ -180,9 +180,43 @@
         .d-desc { font-size: 14px; line-height: 2; color: #888; text-align: justify; }
 
         @media (max-width: 768px) {
-            #detail-view { grid-template-columns: 1fr; grid-template-rows: 55vh 1fr; overflow-y: auto; display: block; }
-            .d-gallery { height: 55vh; } .d-main-stage { padding: 40px; }
-            .d-info { padding: 40px 30px 100px; }
+            /* 导航栏 */
+            nav { height: auto; padding: 16px 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
+            .brand-cn { font-size: 18px; }
+            .nav-categories { width: 100%; overflow-x: auto; flex-wrap: nowrap; gap: 0; padding-bottom: 2px; }
+            .cat-btn { padding: 0 16px; flex-shrink: 0; }
+            .cat-btn span.cn { font-size: 13px; }
+
+            /* 时间轴 */
+            .timeline-container { padding-top: 90px; }
+            .year-section { flex-direction: column; }
+            .year-label {
+                width: 100%; height: auto;
+                position: static;
+                padding: 24px 20px 8px;
+                font-size: 3.5rem;
+                border-left: none;
+                border-bottom: 1px solid #1a1a1a;
+                -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            }
+            .year-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                padding: 12px 12px 40px;
+                border-left: none;
+            }
+            .card-overlay { opacity: 1; padding: 16px; }
+            .c-title { font-size: 1rem; }
+
+            /* 详情页 */
+            #detail-view { display: block; overflow-y: auto; }
+            .d-gallery { height: 55vh; }
+            .d-main-stage { padding: 20px; }
+            .d-filmstrip { height: 80px; gap: 10px; }
+            .thumb-item { height: 40px; min-width: 40px; }
+            .d-info { height: auto; padding: 30px 20px 80px; }
+            .d-title-cn { font-size: 2rem; }
+            .d-close-btn { top: 16px; right: 16px; }
         }
     </style>
 </head>
