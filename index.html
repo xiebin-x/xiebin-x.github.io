@@ -170,9 +170,10 @@
             max-width: 100%; max-height: 100%; object-fit: contain;
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.05);
-            opacity: 0; transition: opacity 0.4s ease;
+            opacity: 0; transform: scale(0.97);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .d-main-stage img.visible { opacity: 1; }
+        .d-main-stage img.visible { opacity: 1; transform: scale(1); }
         .d-loader {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 32px; height: 2px; background: rgba(255,255,255,0.15);
@@ -196,10 +197,12 @@
             overflow-x: auto; z-index: 20;
         }
         .thumb-item {
-            height: 55px; min-width: 55px; cursor: pointer; opacity: 0.3; transition: 0.3s;
+            height: 55px; min-width: 55px; cursor: pointer; opacity: 0.3;
             object-fit: cover; border: 1px solid transparent;
+            transition: opacity 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .thumb-item.active { opacity: 1; border-color: var(--accent); }
+        .thumb-item:hover { opacity: 0.75; transform: translateY(-3px); }
+        .thumb-item.active { opacity: 1; border-color: var(--accent); transform: translateY(-3px); }
 
         .d-info {
             height: 100vh; background: #000; padding: 60px 50px;
@@ -219,6 +222,16 @@
         .data-label { font-size: 10px; color: #555; text-transform: uppercase; margin-bottom: 8px; }
         .data-val { font-family: var(--font-en-bold); font-size: 20px; color: #aaa; }
         .d-desc { font-size: 13px; line-height: 2; color: #777; text-align: justify; }
+
+        /* 信息栏分层进入 */
+        .d-title-cn, .d-title-en, .d-data-row, .d-desc {
+            opacity: 0; transform: translateY(14px);
+            transition: opacity 0.5s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .d-info.d-entered .d-title-cn { opacity: 1; transform: none; transition-delay: 0.12s; }
+        .d-info.d-entered .d-title-en { opacity: 1; transform: none; transition-delay: 0.20s; }
+        .d-info.d-entered .d-data-row { opacity: 1; transform: none; transition-delay: 0.28s; }
+        .d-info.d-entered .d-desc    { opacity: 1; transform: none; transition-delay: 0.36s; }
 
         /* 左右导航按钮 */
         .d-nav-btn {
@@ -559,6 +572,10 @@
             updateNavButtons();
             document.getElementById('detail-view').classList.add('active');
             document.body.style.overflow = 'hidden';
+            // 信息栏分层进入动画
+            const dInfo = document.querySelector('.d-info');
+            dInfo.classList.remove('d-entered');
+            requestAnimationFrame(() => requestAnimationFrame(() => dInfo.classList.add('d-entered')));
         }
 
         function closeDetail() {
