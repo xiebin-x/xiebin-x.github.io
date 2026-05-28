@@ -117,20 +117,33 @@
         }
         .card::after {
             content: ''; position: absolute; inset: 0;
-            background: rgba(0,0,0,0.12); transition: opacity 0.4s;
+            background: rgba(0,0,0,0.08);
+            transition: background 0.5s;
             pointer-events: none;
         }
-        .card:hover::after { opacity: 0; }
-        .card:hover img { transform: scale(1.05); }
+        .card:hover::after { background: rgba(0,0,0,0.28); }
+        .card:hover img { transform: scale(1.04); }
         .card-overlay {
             position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 30px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            opacity: 0; transition: 0.4s;
+            padding: 20px 22px 22px;
             display: flex; flex-direction: column; justify-content: flex-end;
+            pointer-events: none;
         }
-        .card:hover .card-overlay { opacity: 1; }
-        .c-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 5px; }
+        .c-title {
+            font-size: 1rem; font-weight: 600; margin-bottom: 4px;
+            text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+            opacity: 0; transform: translateY(8px);
+            transition: opacity 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .c-meta {
+            font-family: var(--font-en-bold); font-size: 10px;
+            color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+            opacity: 0; transform: translateY(6px);
+            transition: opacity 0.4s 0.05s, transform 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card:hover .c-title { opacity: 1; transform: translateY(0); }
+        .card:hover .c-meta { opacity: 1; transform: translateY(0); }
 
         /* --- 4. 详情页 (精致留白重构) --- */
         #detail-view {
@@ -252,7 +265,8 @@
                 border-left: none;
             }
             .card-overlay { opacity: 1; padding: 16px; }
-            .c-title { font-size: 1rem; }
+            .c-title { font-size: 1rem; opacity: 1; transform: translateY(0); }
+            .c-meta { opacity: 1; transform: translateY(0); }
 
             /* 详情页 — 手机全屏图片 */
             #detail-view { display: block; overflow: hidden; }
