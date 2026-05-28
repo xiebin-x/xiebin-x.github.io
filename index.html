@@ -314,8 +314,8 @@
                             const pre = new Image(); pre.src = encodeURI(p.cover);
                         }
                     }, { once: false });
-                    const thumbSrc = encodeURI(p.cover.replace('images/', 'images/thumbs/'));
-                    card.innerHTML = `<img data-src="${thumbSrc}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
+                    const fullSrc = encodeURI(p.cover);
+                    card.innerHTML = `<img data-src="${fullSrc}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
                 section.appendChild(label);
