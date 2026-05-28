@@ -384,7 +384,7 @@
             strip.innerHTML = '';
             allImages.forEach((src, index) => {
                 const thumb = document.createElement('img');
-                thumb.src = encodeURI(src.replace('images/', 'images/thumbs/'));
+                thumb.src = encodeURI(src);
                 thumb.className = 'thumb-item' + (index === 0 ? ' active' : '');
                 thumb.onclick = function() {
                     mainImg.classList.remove('loaded');
