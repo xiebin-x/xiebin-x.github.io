@@ -306,7 +306,7 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openDetail(p);
-                    card.innerHTML = `<img src="${encodeURI(p.cover)}" loading="lazy"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
+                    card.innerHTML = `<img src="${encodeURI(p.cover)}"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
                 section.appendChild(label);
