@@ -447,7 +447,7 @@
                 mainImg.classList.add('visible');
             };
             full.onerror = () => { loader.classList.add('hidden'); };
-            full.src = encodeURI(isMobileView() ? detailPath(path) : path);
+            full.src = encodeURI(path);
         }
 
         // 手机端详情页状态
@@ -565,10 +565,10 @@
             renderDots(mDetailImages, 0);
             if (isMobileView()) {
                 setupMobileSwipe();
-                // 后台预加载系列剩余图片（detail 画质版）
+                // 后台预加载系列剩余图片（原图画质）
                 mDetailImages.slice(1).forEach(src => {
                     const pre = new Image();
-                    pre.src = encodeURI(detailPath(src));
+                    pre.src = encodeURI(src);
                 });
             }
 
