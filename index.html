@@ -300,7 +300,7 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openDetail(p);
-                    card.innerHTML = `<img src="${p.cover}" loading="lazy"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
+                    card.innerHTML = `<img src="${encodeURI(p.cover)}" loading="lazy"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
                 section.appendChild(label);
@@ -319,7 +319,7 @@
         function openDetail(p) {
             const mainImg = document.getElementById('d-img');
             const strip = document.getElementById('d-filmstrip');
-            mainImg.src = p.cover;
+            mainImg.src = encodeURI(p.cover);
             document.getElementById('d-title').innerText = p.title;
             document.getElementById('d-year').innerText = p.year || '2026';
             document.getElementById('d-cat').innerText = p.category;
@@ -330,7 +330,7 @@
             strip.innerHTML = '';
             allImages.forEach((src, index) => {
                 const thumb = document.createElement('img');
-                thumb.src = src;
+                thumb.src = encodeURI(src);
                 thumb.className = 'thumb-item' + (index === 0 ? ' active' : '');
                 thumb.onclick = function() {
                     mainImg.src = src;

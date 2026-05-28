@@ -5,13 +5,13 @@ window.portfolioData = [
         "category": "人文",
         "year": "2026",
         "desc": "",
-        "cover": "images/1768055174334_2 .jpg",
+        "cover": "images/1768055174334.jpg",
         "series": [
-            "images/s_1768055174353_1 拷贝.jpg",
-            "images/s_1768055174363_2 .jpg",
-            "images/s_1768055174375_3.jpg",
-            "images/s_1768055174387_4.jpg",
-            "images/s_1768055174393_7.jpg"
+            "images/s_1768055174353.jpg",
+            "images/s_1768055174363.jpg",
+            "images/s_1768055174375.jpg",
+            "images/s_1768055174387.jpg",
+            "images/s_1768055174393.jpg"
         ]
     },
     {
@@ -20,7 +20,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2026",
         "desc": "",
-        "cover": "images/1779949102759_《郴州必胜》.jpg",
+        "cover": "images/1779949102759.jpg",
         "series": []
     },
     {
@@ -29,7 +29,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2025",
         "desc": "",
-        "cover": "images/1779949102447_《一眼千年》.jpg",
+        "cover": "images/1779949102447.jpg",
         "series": []
     },
     {
@@ -38,11 +38,11 @@ window.portfolioData = [
         "category": "风光",
         "year": "2025",
         "desc": "",
-        "cover": "images/1779949102545_《山石矶风光1》.jpg",
+        "cover": "images/1779949102545.jpg",
         "series": [
-            "images/1779949102555_《山石矶风光2》.jpg",
-            "images/1779949102565_《山石矶风光3》.jpg",
-            "images/1779949102575_《山石矶风光4》.jpg"
+            "images/1779949102555.jpg",
+            "images/1779949102565.jpg",
+            "images/1779949102575.jpg"
         ]
     },
     {
@@ -51,7 +51,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2025",
         "desc": "",
-        "cover": "images/1779949102664_《炎陵黄桃之乡》.jpg",
+        "cover": "images/1779949102664.jpg",
         "series": []
     },
     {
@@ -60,7 +60,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2024",
         "desc": "",
-        "cover": "images/1779949102465_《回龙山》.jpg",
+        "cover": "images/1779949102465.jpg",
         "series": []
     },
     {
@@ -69,7 +69,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2024",
         "desc": "",
-        "cover": "images/1779949102685_《矮寨大桥》.jpg",
+        "cover": "images/1779949102685.jpg",
         "series": []
     },
     {
@@ -78,7 +78,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2024",
         "desc": "",
-        "cover": "images/1779949102695_《矮寨风光》.jpg",
+        "cover": "images/1779949102695.jpg",
         "series": []
     },
     {
@@ -87,7 +87,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2024",
         "desc": "",
-        "cover": "images/1779949102768_《金仙寨星轨》 .jpg",
+        "cover": "images/1779949102768.jpg",
         "series": []
     },
     {
@@ -96,7 +96,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2024",
         "desc": "",
-        "cover": "images/1779949102778_《金鞭神柱》.jpg",
+        "cover": "images/1779949102778.jpg",
         "series": []
     },
     {
@@ -105,7 +105,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2023",
         "desc": "",
-        "cover": "images/1768055517524_《漓江风光2》.jpg",
+        "cover": "images/1768055517524.jpg",
         "series": []
     },
     {
@@ -114,7 +114,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2023",
         "desc": "",
-        "cover": "images/1779949102613_《洞穴人家》.jpg",
+        "cover": "images/1779949102613.jpg",
         "series": []
     },
     {
@@ -123,7 +123,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2023",
         "desc": "",
-        "cover": "images/1779949102704_《穿过一线天》.jpg",
+        "cover": "images/1779949102704.jpg",
         "series": []
     },
     {
@@ -132,7 +132,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2023",
         "desc": "",
-        "cover": "images/1779949102803_《骆驼峰》.jpg",
+        "cover": "images/1779949102803.jpg",
         "series": []
     },
     {
@@ -141,9 +141,9 @@ window.portfolioData = [
         "category": "风光",
         "year": "2023",
         "desc": "",
-        "cover": "images/1779949102821_《龙脊梯田1》.jpg",
+        "cover": "images/1779949102821.jpg",
         "series": [
-            "images/1779949102833_《龙脊梯田2》 拷贝.jpg"
+            "images/1779949102833.jpg"
         ]
     },
     {
@@ -152,7 +152,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2022",
         "desc": "",
-        "cover": "images/1779949102482_《回龙山星轨》.jpg",
+        "cover": "images/1779949102482.jpg",
         "series": []
     },
     {
@@ -161,7 +161,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2022",
         "desc": "",
-        "cover": "images/1779949102509_《大眼睛》拍于黑坦.jpg",
+        "cover": "images/1779949102509.jpg",
         "series": []
     },
     {
@@ -170,11 +170,11 @@ window.portfolioData = [
         "category": "风光",
         "year": "2022",
         "desc": "",
-        "cover": "images/1779949102725_《莽山风光1》.jpg",
+        "cover": "images/1779949102725.jpg",
         "series": [
-            "images/1779949102735_《莽山风光2》.jpg",
-            "images/1779949102742_《莽山风光3》.jpg",
-            "images/1779949102752_《莽山风光4》.jpg"
+            "images/1779949102735.jpg",
+            "images/1779949102742.jpg",
+            "images/1779949102752.jpg"
         ]
     },
     {
@@ -183,7 +183,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2022",
         "desc": "",
-        "cover": "images/1779949102786_《铁鼎寨》.jpg",
+        "cover": "images/1779949102786.jpg",
         "series": []
     },
     {
@@ -192,7 +192,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102453_《北湖公园》.jpg",
+        "cover": "images/1779949102453.jpg",
         "series": []
     },
     {
@@ -201,7 +201,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102472_《回龙山星空》.jpg",
+        "cover": "images/1779949102472.jpg",
         "series": []
     },
     {
@@ -210,7 +210,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102498_《夜》.jpg",
+        "cover": "images/1779949102498.jpg",
         "series": []
     },
     {
@@ -219,7 +219,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102530_《孤独》.jpg",
+        "cover": "images/1779949102530.jpg",
         "series": []
     },
     {
@@ -228,7 +228,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102539_《宁静》.jpg",
+        "cover": "images/1779949102539.jpg",
         "series": []
     },
     {
@@ -237,7 +237,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102585_《日出》.jpg",
+        "cover": "images/1779949102585.jpg",
         "series": []
     },
     {
@@ -246,7 +246,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102673_《盐洲岛》.jpg",
+        "cover": "images/1779949102673.jpg",
         "series": []
     },
     {
@@ -255,7 +255,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2017",
         "desc": "",
-        "cover": "images/1779949102713_《紫鹊界》.jpg",
+        "cover": "images/1779949102713.jpg",
         "series": []
     },
     {
@@ -264,7 +264,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2016",
         "desc": "",
-        "cover": "images/1779949102598_《日出回龙山》.jpg",
+        "cover": "images/1779949102598.jpg",
         "series": []
     },
     {
@@ -273,7 +273,7 @@ window.portfolioData = [
         "category": "人文",
         "year": "2016",
         "desc": "",
-        "cover": "images/1779949102605_《晨捕》.jpg",
+        "cover": "images/1779949102605.jpg",
         "series": []
     },
     {
@@ -282,7 +282,7 @@ window.portfolioData = [
         "category": "风光",
         "year": "2016",
         "desc": "",
-        "cover": "images/1779949102795_《雾漫小东江》.jpg",
+        "cover": "images/1779949102795.jpg",
         "series": []
     }
 ];
