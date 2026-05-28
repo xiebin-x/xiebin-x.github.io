@@ -153,10 +153,8 @@
             max-width: 100%; max-height: 100%; object-fit: contain;
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.05);
-            transition: filter 0.4s ease;
+            transition: opacity 0.3s ease;
         }
-        .d-main-stage img.loading { filter: blur(8px); }
-        .d-main-stage img.loaded { filter: blur(0); }
         .d-filmstrip {
             height: 120px; width: 100%; background: #000; 
             border-top: 1px solid var(--border); 
@@ -337,13 +335,15 @@
             const thumbSrc = fullSrc.replace('images/', 'images/thumbs/');
             // 立即显示缩略图（已缓存，0延迟）
             mainImg.src = encodeURI(thumbSrc);
-            mainImg.classList.add('loading');
-            // 后台加载原图
+            mainImg.style.opacity = '1';
+            // 后台加载原图，加载完淡入替换
             const full = new Image();
             full.onload = () => {
-                mainImg.src = full.src;
-                mainImg.classList.remove('loading');
-                mainImg.classList.add('loaded');
+                mainImg.style.opacity = '0';
+                setTimeout(() => {
+                    mainImg.src = full.src;
+                    mainImg.style.opacity = '1';
+                }, 150);
             };
             full.src = encodeURI(fullSrc);
         }
@@ -351,7 +351,6 @@
         function openDetail(p) {
             const mainImg = document.getElementById('d-img');
             const strip = document.getElementById('d-filmstrip');
-            mainImg.classList.remove('loaded');
             loadMainImage(mainImg, p.cover);
             document.getElementById('d-title').innerText = p.title;
             document.getElementById('d-year').innerText = p.year || '2026';
