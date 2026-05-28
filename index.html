@@ -297,31 +297,8 @@
         let projects = (typeof window.portfolioData !== 'undefined') ? window.portfolioData : [];
         let currentFilter = 'all';
 
-        // 响应式图片：手机优先使用 1200px，失败后回退桌面图
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
-        let lazyObserver = null;
-        let lazyFallbackHandler = null;
-
         function mobilePath(path) {
             return path.startsWith('images/') ? path.replace(/^images\//, 'images/mobile/') : path;
-        }
-
-        function responsiveImageSrc(path) {
-            return encodeURI(isMobile ? mobilePath(path) : path);
-        }
-
-        function setResponsiveSrc(img, path) {
-            const desktop = encodeURI(path);
-            const mobile = encodeURI(mobilePath(path));
-
-            img.onerror = () => {
-                if (isMobile && img.src.includes('/images/mobile/')) {
-                    img.onerror = null;
-                    img.src = desktop;
-                }
-            };
-
-            img.src = isMobile ? mobile : desktop;
         }
 
         const CAT_EN = { '风光': 'Landscape', '人文': 'Life', '人像': 'Portrait', '商业': 'Commercial' };
@@ -360,16 +337,16 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openDetail(p);
-                    // 鼠标悬停时预加载原图（仅桌面端）
-                    if (!isMobile) {
-                        card.addEventListener('mouseenter', () => {
-                            if (!card._preloaded) {
-                                card._preloaded = true;
-                                const pre = new Image(); pre.src = encodeURI(p.cover);
-                            }
-                        }, { once: false });
-                    }
-                    card.innerHTML = `<img data-path="${p.cover}" alt="${p.title}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
+                    // 桌面端鼠标悬停预加载原图
+                    card.addEventListener('mouseenter', () => {
+                        if (!card._preloaded) {
+                            card._preloaded = true;
+                            const pre = new Image(); pre.src = encodeURI(p.cover);
+                        }
+                    }, { once: false });
+                    const mob = encodeURI(mobilePath(p.cover));
+                    const desk = encodeURI(p.cover);
+                    card.innerHTML = `<img src="${mob}" srcset="${mob} 768w, ${desk} 2400w" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" alt="${p.title}"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
                 section.appendChild(label);
@@ -395,15 +372,8 @@
                 loader.classList.add('hidden');
                 mainImg.classList.add('visible');
             };
-            full.onerror = () => {
-                if (isMobile && full.src.includes('/images/mobile/')) {
-                    full.onerror = () => loader.classList.add('hidden');
-                    full.src = encodeURI(path);
-                    return;
-                }
-                loader.classList.add('hidden');
-            };
-            full.src = responsiveImageSrc(path);
+            full.onerror = () => { loader.classList.add('hidden'); };
+            full.src = encodeURI(path);
         }
 
         function openDetail(p) {
@@ -420,10 +390,13 @@
             strip.innerHTML = '';
             allImages.forEach((src, index) => {
                 const thumb = document.createElement('img');
-                setResponsiveSrc(thumb, src);
+                const mob = encodeURI(mobilePath(src));
+                const desk = encodeURI(src);
+                thumb.src = mob;
+                thumb.srcset = `${mob} 768w, ${desk} 2400w`;
+                thumb.sizes = '80px';
                 thumb.className = 'thumb-item' + (index === 0 ? ' active' : '');
                 thumb.onclick = function() {
-                    mainImg.classList.remove('loaded');
                     loadMainImage(mainImg, src);
                     document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
                     thumb.classList.add('active');
@@ -438,57 +411,6 @@
             document.getElementById('detail-view').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
-
-        function loadImg(img) {
-            if (!img.dataset.path) return;
-            setResponsiveSrc(img, img.dataset.path);
-            img.removeAttribute('data-path');
-        }
-
-        function setupLazyLoad() {
-            const imgs = Array.from(document.querySelectorAll('img[data-path]'));
-
-            if (lazyObserver) lazyObserver.disconnect();
-            if (lazyFallbackHandler) {
-                window.removeEventListener('load', lazyFallbackHandler);
-                window.removeEventListener('scroll', lazyFallbackHandler);
-                window.removeEventListener('resize', lazyFallbackHandler);
-            }
-
-            const loadVisible = () => {
-                imgs.forEach(img => {
-                    if (!img.dataset.path) return;
-                    const rect = img.getBoundingClientRect();
-                    if (rect.top < window.innerHeight + 300 && rect.bottom > -300) {
-                        loadImg(img);
-                    }
-                });
-            };
-
-            lazyFallbackHandler = loadVisible;
-            requestAnimationFrame(loadVisible);
-            window.addEventListener('load', loadVisible, { once: true });
-            window.addEventListener('scroll', loadVisible, { passive: true });
-            window.addEventListener('resize', loadVisible);
-
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            loadImg(entry.target);
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, { rootMargin: '300px 0px' });
-                lazyObserver = observer;
-                imgs.forEach(img => observer.observe(img));
-            } else {
-                loadVisible();
-            }
-        }
-
-        const _origRender = renderTimeline;
-        renderTimeline = function() { _origRender(); setupLazyLoad(); };
 
         renderTimeline();
     </script>
