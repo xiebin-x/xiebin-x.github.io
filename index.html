@@ -149,12 +149,32 @@
             padding: 80px; /* 增加留白，让照片像挂在画廊里 */
             overflow: hidden;
         }
+        .d-main-stage {
+            position: relative;
+        }
         .d-main-stage img {
             max-width: 100%; max-height: 100%; object-fit: contain;
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
             border: 1px solid rgba(255,255,255,0.05);
-            transition: opacity 0.3s ease;
+            opacity: 0; transition: opacity 0.4s ease;
         }
+        .d-main-stage img.visible { opacity: 1; }
+        .d-loader {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 32px; height: 2px; background: rgba(255,255,255,0.15);
+            overflow: hidden;
+        }
+        .d-loader::after {
+            content: ''; display: block; height: 100%;
+            background: rgba(255,255,255,0.6);
+            animation: load-sweep 1.2s ease-in-out infinite;
+        }
+        @keyframes load-sweep {
+            0% { width: 0; margin-left: 0; }
+            50% { width: 100%; margin-left: 0; }
+            100% { width: 0; margin-left: 100%; }
+        }
+        .d-loader.hidden { display: none; }
         .d-filmstrip {
             height: 120px; width: 100%; background: #000; 
             border-top: 1px solid var(--border); 
@@ -247,6 +267,7 @@
         <div class="d-gallery">
             <div class="d-main-stage">
                 <img id="d-img" src="" alt="">
+                <div class="d-loader hidden" id="d-loader"></div>
             </div>
             <div class="d-filmstrip" id="d-filmstrip"></div>
         </div>
@@ -332,18 +353,14 @@
         }
 
         function loadMainImage(mainImg, fullSrc) {
-            const thumbSrc = fullSrc.replace('images/', 'images/thumbs/');
-            // 立即显示缩略图（已缓存，0延迟）
-            mainImg.src = encodeURI(thumbSrc);
-            mainImg.style.opacity = '1';
-            // 后台加载原图，加载完淡入替换
+            const loader = document.getElementById('d-loader');
+            mainImg.classList.remove('visible');
+            loader.classList.remove('hidden');
             const full = new Image();
             full.onload = () => {
-                mainImg.style.opacity = '0';
-                setTimeout(() => {
-                    mainImg.src = full.src;
-                    mainImg.style.opacity = '1';
-                }, 150);
+                mainImg.src = full.src;
+                loader.classList.add('hidden');
+                mainImg.classList.add('visible');
             };
             full.src = encodeURI(fullSrc);
         }
