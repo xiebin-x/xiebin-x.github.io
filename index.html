@@ -150,10 +150,13 @@
             overflow: hidden;
         }
         .d-main-stage img {
-            max-width: 100%; max-height: 100%; object-fit: contain; 
+            max-width: 100%; max-height: 100%; object-fit: contain;
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.05); /* 极细的艺术画框边 */
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: filter 0.4s ease;
         }
+        .d-main-stage img.loading { filter: blur(8px); }
+        .d-main-stage img.loaded { filter: blur(0); }
         .d-filmstrip {
             height: 120px; width: 100%; background: #000; 
             border-top: 1px solid var(--border); 
@@ -306,6 +309,13 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openDetail(p);
+                    // 鼠标悬停时预加载原图
+                    card.addEventListener('mouseenter', () => {
+                        if (!card._preloaded) {
+                            card._preloaded = true;
+                            const pre = new Image(); pre.src = encodeURI(p.cover);
+                        }
+                    }, { once: false });
                     const thumbSrc = encodeURI(p.cover.replace('images/', 'images/thumbs/'));
                     card.innerHTML = `<img data-src="${thumbSrc}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
@@ -323,24 +333,41 @@
             renderTimeline();
         }
 
+        function loadMainImage(mainImg, fullSrc) {
+            const thumbSrc = fullSrc.replace('images/', 'images/thumbs/');
+            // 立即显示缩略图（已缓存，0延迟）
+            mainImg.src = encodeURI(thumbSrc);
+            mainImg.classList.add('loading');
+            // 后台加载原图
+            const full = new Image();
+            full.onload = () => {
+                mainImg.src = full.src;
+                mainImg.classList.remove('loading');
+                mainImg.classList.add('loaded');
+            };
+            full.src = encodeURI(fullSrc);
+        }
+
         function openDetail(p) {
             const mainImg = document.getElementById('d-img');
             const strip = document.getElementById('d-filmstrip');
-            mainImg.src = encodeURI(p.cover);
+            mainImg.classList.remove('loaded');
+            loadMainImage(mainImg, p.cover);
             document.getElementById('d-title').innerText = p.title;
             document.getElementById('d-year').innerText = p.year || '2026';
             document.getElementById('d-cat').innerText = p.category;
             document.getElementById('d-desc').innerText = p.desc;
-            
+
             let allImages = [p.cover];
             if (p.series) allImages = allImages.concat(p.series);
             strip.innerHTML = '';
             allImages.forEach((src, index) => {
                 const thumb = document.createElement('img');
-                thumb.src = encodeURI(src);
+                thumb.src = encodeURI(src.replace('images/', 'images/thumbs/'));
                 thumb.className = 'thumb-item' + (index === 0 ? ' active' : '');
                 thumb.onclick = function() {
-                    mainImg.src = src;
+                    mainImg.classList.remove('loaded');
+                    loadMainImage(mainImg, src);
                     document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
                     thumb.classList.add('active');
                 };
