@@ -192,18 +192,9 @@
             <div class="brand-cn">谢斌摄影</div>
             <div class="brand-en">XIE BIN PHOTOGRAPHY</div>
         </div>
-        <div class="nav-categories">
+        <div class="nav-categories" id="nav-categories">
             <div class="cat-btn active" onclick="filter('all', this)">
                 <span class="cn">全部</span><span class="en">All Works</span>
-            </div>
-            <div class="cat-btn" onclick="filter('风光', this)">
-                <span class="cn">风光</span><span class="en">Landscape</span>
-            </div>
-            <div class="cat-btn" onclick="filter('人像', this)">
-                <span class="cn">人像</span><span class="en">Portrait</span>
-            </div>
-            <div class="cat-btn" onclick="filter('人文', this)">
-                <span class="cn">人文</span><span class="en">Life</span>
             </div>
         </div>
     </nav>
@@ -238,6 +229,21 @@
     <script>
         let projects = (typeof window.portfolioData !== 'undefined') ? window.portfolioData : [];
         let currentFilter = 'all';
+
+        const CAT_EN = { '风光': 'Landscape', '人文': 'Life', '人像': 'Portrait', '商业': 'Commercial' };
+
+        function buildNav() {
+            const nav = document.getElementById('nav-categories');
+            const cats = [...new Set(projects.map(p => p.category))].sort();
+            cats.forEach(cat => {
+                const btn = document.createElement('div');
+                btn.className = 'cat-btn';
+                btn.onclick = () => filter(cat, btn);
+                btn.innerHTML = `<span class="cn">${cat}</span><span class="en">${CAT_EN[cat] || cat}</span>`;
+                nav.appendChild(btn);
+            });
+        }
+        buildNav();
 
         function renderTimeline() {
             const container = document.getElementById('timeline');
