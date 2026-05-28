@@ -297,6 +297,13 @@
         let projects = (typeof window.portfolioData !== 'undefined') ? window.portfolioData : [];
         let currentFilter = 'all';
 
+        // 响应式图片：手机用 1200px，桌面用 2400px
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        function imgSrc(path) {
+            if (isMobile) return path.replace('images/', 'images/mobile/');
+            return path;
+        }
+
         const CAT_EN = { '风光': 'Landscape', '人文': 'Life', '人像': 'Portrait', '商业': 'Commercial' };
 
         function buildNav() {
@@ -333,14 +340,16 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openDetail(p);
-                    // 鼠标悬停时预加载原图
-                    card.addEventListener('mouseenter', () => {
-                        if (!card._preloaded) {
-                            card._preloaded = true;
-                            const pre = new Image(); pre.src = encodeURI(p.cover);
-                        }
-                    }, { once: false });
-                    const fullSrc = encodeURI(p.cover);
+                    // 鼠标悬停时预加载原图（仅桌面端）
+                    if (!isMobile) {
+                        card.addEventListener('mouseenter', () => {
+                            if (!card._preloaded) {
+                                card._preloaded = true;
+                                const pre = new Image(); pre.src = encodeURI(p.cover);
+                            }
+                        }, { once: false });
+                    }
+                    const fullSrc = encodeURI(imgSrc(p.cover));
                     card.innerHTML = `<img data-src="${fullSrc}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
@@ -373,7 +382,7 @@
         function openDetail(p) {
             const mainImg = document.getElementById('d-img');
             const strip = document.getElementById('d-filmstrip');
-            loadMainImage(mainImg, p.cover);
+            loadMainImage(mainImg, imgSrc(p.cover));
             document.getElementById('d-title').innerText = p.title;
             document.getElementById('d-year').innerText = p.year || '2026';
             document.getElementById('d-cat').innerText = p.category;
@@ -384,11 +393,11 @@
             strip.innerHTML = '';
             allImages.forEach((src, index) => {
                 const thumb = document.createElement('img');
-                thumb.src = encodeURI(src);
+                thumb.src = encodeURI(imgSrc(src));
                 thumb.className = 'thumb-item' + (index === 0 ? ' active' : '');
                 thumb.onclick = function() {
                     mainImg.classList.remove('loaded');
-                    loadMainImage(mainImg, src);
+                    loadMainImage(mainImg, imgSrc(src));
                     document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
                     thumb.classList.add('active');
                 };
