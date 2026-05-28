@@ -306,7 +306,8 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openDetail(p);
-                    card.innerHTML = `<img src="${encodeURI(p.cover)}"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
+                    const thumbSrc = encodeURI(p.cover.replace('images/', 'images/thumbs/'));
+                    card.innerHTML = `<img data-src="${thumbSrc}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
                     grid.appendChild(card);
                 });
                 section.appendChild(label);
@@ -353,6 +354,28 @@
             document.getElementById('detail-view').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
+
+        function setupLazyLoad() {
+            const imgs = document.querySelectorAll('img[data-src]');
+            if (!('IntersectionObserver' in window)) {
+                imgs.forEach(img => { img.src = img.dataset.src; });
+                return;
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        observer.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '200px' });
+            imgs.forEach(img => observer.observe(img));
+        }
+
+        const _origRender = renderTimeline;
+        renderTimeline = function() { _origRender(); setupLazyLoad(); };
 
         renderTimeline();
     </script>
