@@ -547,7 +547,14 @@
             // 手机端
             document.querySelector('.d-info').classList.remove('m-visible');
             renderDots(mDetailImages, 0);
-            if (isMobileView()) setupMobileSwipe();
+            if (isMobileView()) {
+                setupMobileSwipe();
+                // 后台预加载系列剩余图片
+                mDetailImages.slice(1).forEach(src => {
+                    const pre = new Image();
+                    pre.src = encodeURI(mobilePath(src));
+                });
+            }
 
             updateNavButtons();
             document.getElementById('detail-view').classList.add('active');
