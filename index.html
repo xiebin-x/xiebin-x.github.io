@@ -356,13 +356,21 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.onclick = () => openDetail(p);
-                    // 桌面端鼠标悬停预加载原图
+                    // 桌面端：鼠标悬停预加载原图
                     card.addEventListener('mouseenter', () => {
                         if (!card._preloaded) {
                             card._preloaded = true;
                             const pre = new Image(); pre.src = encodeURI(p.cover);
                         }
                     }, { once: false });
+                    // 手机端：触摸瞬间预加载详情图，比点击早 100-200ms
+                    card.addEventListener('touchstart', () => {
+                        if (!card._preloaded) {
+                            card._preloaded = true;
+                            const pre = new Image();
+                            pre.src = encodeURI(mobilePath(p.cover));
+                        }
+                    }, { passive: true });
                     const mob = encodeURI(mobilePath(p.cover));
                     const desk = encodeURI(p.cover);
                     card.innerHTML = `<img src="${mob}" srcset="${mob} 768w, ${desk} 2400w" sizes="(max-width: 768px) 50vw, 33vw" loading="lazy" alt="${p.title}"><div class="card-overlay"><div class="c-title">${p.title}</div><div class="c-meta">${p.category}</div></div>`;
