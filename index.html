@@ -288,6 +288,15 @@
         .d-nav-next { right: 20px; }
         .d-nav-btn.d-hidden { opacity: 0; pointer-events: none; }
 
+        .site-footer {
+            text-align: center;
+            padding: 40px 60px 48px;
+            font-family: var(--font-ui);
+            font-size: 11px;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+
         @media (max-width: 768px) {
             /* 导航栏 */
             nav { height: auto; padding: 16px 20px; flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -374,6 +383,10 @@
     </nav>
 
     <div class="timeline-container" id="timeline"></div>
+
+    <footer class="site-footer">
+        © 谢斌摄影 Xie Bin Photography &nbsp; 版权所有 All rights reserved.
+    </footer>
 
     <div id="detail-view">
         <div class="d-close-btn" onclick="closeDetail()">✕</div>
