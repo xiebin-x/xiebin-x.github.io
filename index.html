@@ -145,18 +145,16 @@
         #detail-view {
             position: fixed; inset: 0; z-index: 200;
             background: #000;
-            display: grid; 
-            grid-template-columns: 1fr 420px; 
+            display: flex; flex-direction: column;
             transform: translateY(100%); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
         #detail-view.active { transform: translateY(0); }
 
         .d-gallery {
-            height: 100vh;
-            background: #080808; /* 比背景深一点的灰色 */
+            flex: 1; min-height: 0;
+            background: #080808;
             display: flex; flex-direction: column;
             position: relative;
-            border-right: 1px solid var(--border);
         }
         .d-main-stage {
             flex: 1; width: 100%; display: flex; align-items: center; justify-content: center;
@@ -204,34 +202,70 @@
         .thumb-item:hover { opacity: 0.75; transform: translateY(-3px); }
         .thumb-item.active { opacity: 1; border-color: var(--accent); transform: translateY(-3px); }
 
+        /* --- 底部信息条 --- */
         .d-info {
-            height: 100vh; background: #000; padding: 60px 50px;
-            display: flex; flex-direction: column; justify-content: center; position: relative;
+            flex-shrink: 0;
+            background: #000;
+            border-top: 1px solid var(--border);
+            overflow: hidden;
+            max-height: 76px;
+            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .d-info.d-expanded { max-height: 340px; }
+
+        .d-info-bar {
+            height: 76px; display: flex; align-items: center;
+            padding: 0 60px; cursor: pointer; gap: 20px;
+            transition: background 0.2s;
+        }
+        .d-info-bar:hover { background: rgba(255,255,255,0.025); }
+        .d-bar-left { flex: 1; display: flex; align-items: baseline; gap: 16px; min-width: 0; }
+        .d-bar-right { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+
+        .d-title-cn {
+            font-size: 1.05rem; font-weight: 600;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.5s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .d-title-en {
+            font-family: var(--font-en-bold); font-size: 10px; color: #555;
+            letter-spacing: 3px; white-space: nowrap; flex-shrink: 0;
+            opacity: 0; transform: translateY(10px);
+            transition: opacity 0.5s 0.08s, transform 0.5s 0.08s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .d-info.d-entered .d-title-cn { opacity: 1; transform: none; }
+        .d-info.d-entered .d-title-en { opacity: 1; transform: none; }
+
+        .d-bar-meta {
+            font-family: var(--font-en-bold); font-size: 11px;
+            color: #444; letter-spacing: 2px; text-transform: uppercase;
+        }
+        .d-expand-icon {
+            width: 28px; height: 28px;
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: #555; line-height: 1;
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.3s, color 0.3s;
+            user-select: none;
+        }
+        .d-info.d-expanded .d-expand-icon {
+            transform: rotate(45deg); border-color: rgba(255,255,255,0.3); color: #aaa;
         }
         .d-close-btn {
-            position: absolute; top: 40px; right: 40px;
             width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
-            color: #fff; display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: 0.3s; z-index: 10;
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; flex-shrink: 0;
         }
         .d-close-btn:hover { border-color: #fff; background: #fff; color: #000; transform: rotate(90deg); }
 
-        .d-title-cn { font-size: 2rem; font-weight: 600; line-height: 1.2; margin-bottom: 12px; }
-        .d-title-en { font-family: var(--font-en-bold); font-size: 11px; color: #555; letter-spacing: 4px; margin-bottom: 44px; }
-        .d-data-row { display: flex; justify-content: space-between; border-bottom: 1px solid #1a1a1a; padding-bottom: 22px; margin-bottom: 36px; }
-        .data-label { font-size: 10px; color: #555; text-transform: uppercase; margin-bottom: 8px; }
-        .data-val { font-family: var(--font-en-bold); font-size: 20px; color: #aaa; }
-        .d-desc { font-size: 13px; line-height: 2; color: #777; text-align: justify; }
-
-        /* 信息栏分层进入 */
-        .d-title-cn, .d-title-en, .d-data-row, .d-desc {
-            opacity: 0; transform: translateY(14px);
-            transition: opacity 0.5s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        .d-info-body {
+            padding: 4px 60px 36px;
+            opacity: 0; transform: translateY(6px);
+            transition: opacity 0.35s 0.1s, transform 0.35s 0.1s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .d-info.d-entered .d-title-cn { opacity: 1; transform: none; transition-delay: 0.12s; }
-        .d-info.d-entered .d-title-en { opacity: 1; transform: none; transition-delay: 0.20s; }
-        .d-info.d-entered .d-data-row { opacity: 1; transform: none; transition-delay: 0.28s; }
-        .d-info.d-entered .d-desc    { opacity: 1; transform: none; transition-delay: 0.36s; }
+        .d-info.d-expanded .d-info-body { opacity: 1; transform: none; }
+        .d-desc { font-size: 14px; line-height: 2; color: #666; }
 
         /* 左右导航按钮 */
         .d-nav-btn {
@@ -283,20 +317,29 @@
             .year-label { margin-top: 16px; }
 
             /* 详情页 — 手机全屏图片 */
-            #detail-view { display: block; overflow: hidden; }
-            .d-gallery { height: 100vh; border-right: none; }
+            .d-gallery { height: 100vh; }
             .d-main-stage { padding: 0; height: 100vh; }
             .d-filmstrip { display: none; }
             .d-info {
                 position: fixed; bottom: 0; left: 0; right: 0;
-                height: auto; max-height: 65vh; overflow-y: auto;
-                padding: 40px 24px 52px;
-                background: linear-gradient(to top, rgba(0,0,0,0.97) 80%, transparent);
+                max-height: 70vh; overflow-y: auto;
+                display: block;
+                border-top: none;
+                background: linear-gradient(to top, rgba(0,0,0,0.97) 60%, rgba(0,0,0,0.88) 100%);
                 transform: translateY(100%);
                 transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-                z-index: 210; justify-content: flex-start;
+                z-index: 210;
             }
             .d-info.m-visible { transform: translateY(0); }
+            .d-info-bar {
+                height: auto; padding: 28px 24px 8px; cursor: default;
+                flex-wrap: wrap; align-items: flex-start;
+            }
+            .d-info-bar:hover { background: none; }
+            .d-bar-left { flex-direction: column; align-items: flex-start; gap: 6px; width: 100%; }
+            .d-bar-right { display: none; }
+            .d-title-cn { font-size: 1.5rem; white-space: normal; }
+            .d-info-body { opacity: 1; transform: none; padding: 8px 24px 48px; transition: none; }
             .d-dots {
                 position: fixed; bottom: 20px; left: 0; right: 0;
                 display: flex; justify-content: center; gap: 6px;
@@ -307,8 +350,6 @@
                 background: rgba(255,255,255,0.3); transition: 0.25s;
             }
             .d-dot.active { background: #fff; width: 16px; border-radius: 3px; }
-            .d-title-cn { font-size: 2rem; }
-            .d-close-btn { top: 16px; right: 16px; z-index: 230; }
         }
     </style>
 </head>
@@ -328,7 +369,6 @@
     <div class="timeline-container" id="timeline"></div>
 
     <div id="detail-view">
-        <div class="d-close-btn" onclick="closeDetail()">✕</div>
         <div class="d-gallery">
             <button class="d-nav-btn d-nav-prev d-hidden" id="d-prev" onclick="mNavigate(-1)">&#8592;</button>
             <button class="d-nav-btn d-nav-next d-hidden" id="d-next" onclick="mNavigate(1)">&#8594;</button>
@@ -339,20 +379,21 @@
             <div class="d-filmstrip" id="d-filmstrip"></div>
         </div>
         <div id="d-dots" class="d-dots"></div>
-        <div class="d-info">
-            <div class="d-title-cn" id="d-title"></div>
-            <div class="d-title-en">IMAGE ARCHIVE — VOL.1</div>
-            <div class="d-data-row">
-                <div class="data-box">
-                    <div class="data-label">年份 / YEAR</div>
-                    <div class="data-val" id="d-year"></div>
+        <div class="d-info" id="d-info-panel">
+            <div class="d-info-bar" onclick="toggleDesktopInfo(event)">
+                <div class="d-bar-left">
+                    <div class="d-title-cn" id="d-title"></div>
+                    <div class="d-title-en" id="d-title-en"></div>
                 </div>
-                <div class="data-box" style="text-align: right;">
-                    <div class="data-label">分类 / CATEGORY</div>
-                    <div class="data-val" id="d-cat" style="font-size: 20px;"></div>
+                <div class="d-bar-right">
+                    <span class="d-bar-meta"><span id="d-year"></span> · <span id="d-cat"></span></span>
+                    <div class="d-expand-icon">+</div>
+                    <div class="d-close-btn" onclick="event.stopPropagation(); closeDetail()">✕</div>
                 </div>
             </div>
-            <div class="d-desc" id="d-desc"></div>
+            <div class="d-info-body">
+                <div class="d-desc" id="d-desc"></div>
+            </div>
         </div>
     </div>
 
@@ -363,10 +404,6 @@
         function mobilePath(path) {
             return path.startsWith('images/') ? path.replace(/^images\//, 'images/mobile/') : path;
         }
-        function detailPath(path) {
-            return path.startsWith('images/') ? path.replace(/^images\//, 'images/detail/') : path;
-        }
-
         const CAT_EN = { '风光': 'Landscape', '人文': 'Life', '人像': 'Portrait', '商业': 'Commercial' };
 
         function buildNav() {
@@ -450,11 +487,18 @@
             full.src = encodeURI(path);
         }
 
-        // 手机端详情页状态
+        // 详情页状态
         let mDetailImages = [];
         let mDetailIdx = 0;
         let mInfoVisible = false;
         let mSwipeReady = false;
+        let dInfoExpanded = false;
+
+        function toggleDesktopInfo(e) {
+            if (isMobileView()) return;
+            dInfoExpanded = !dInfoExpanded;
+            document.getElementById('d-info-panel').classList.toggle('d-expanded', dInfoExpanded);
+        }
 
         function isMobileView() { return window.innerWidth <= 768; }
 
@@ -490,7 +534,7 @@
 
         function mToggleInfo() {
             mInfoVisible = !mInfoVisible;
-            document.querySelector('.d-info').classList.toggle('m-visible', mInfoVisible);
+            document.getElementById('d-info-panel').classList.toggle('m-visible', mInfoVisible);
         }
 
         function setupMobileSwipe() {
@@ -536,6 +580,7 @@
 
             loadMainImage(mainImg, mDetailImages[0]);
             document.getElementById('d-title').innerText = p.title;
+            document.getElementById('d-title-en').innerText = (CAT_EN[p.category] || p.category).toUpperCase();
             document.getElementById('d-year').innerText = p.year || '2026';
             document.getElementById('d-cat').innerText = p.category;
             document.getElementById('d-desc').innerText = p.desc;
@@ -573,17 +618,22 @@
             }
 
             updateNavButtons();
+            // 重置信息栏展开状态
+            dInfoExpanded = false;
+            const dInfo = document.getElementById('d-info-panel');
+            dInfo.classList.remove('d-expanded');
             document.getElementById('detail-view').classList.add('active');
             document.body.style.overflow = 'hidden';
-            // 信息栏分层进入动画
-            const dInfo = document.querySelector('.d-info');
+            // 信息栏标题入场动画
             dInfo.classList.remove('d-entered');
             requestAnimationFrame(() => requestAnimationFrame(() => dInfo.classList.add('d-entered')));
         }
 
         function closeDetail() {
             document.getElementById('detail-view').classList.remove('active');
-            document.querySelector('.d-info').classList.remove('m-visible');
+            const dInfo = document.getElementById('d-info-panel');
+            dInfo.classList.remove('m-visible', 'd-expanded');
+            dInfoExpanded = false;
             document.body.style.overflow = 'auto';
         }
 
