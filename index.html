@@ -253,9 +253,10 @@
             transform: rotate(45deg); border-color: rgba(255,255,255,0.3); color: #aaa;
         }
         .d-close-btn {
+            position: fixed; top: 40px; right: 40px; z-index: 210;
             width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%;
             color: #fff; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; flex-shrink: 0;
+            cursor: pointer; transition: 0.3s;
         }
         .d-close-btn:hover { border-color: #fff; background: #fff; color: #000; transform: rotate(90deg); }
 
@@ -369,6 +370,7 @@
     <div class="timeline-container" id="timeline"></div>
 
     <div id="detail-view">
+        <div class="d-close-btn" onclick="closeDetail()">✕</div>
         <div class="d-gallery">
             <button class="d-nav-btn d-nav-prev d-hidden" id="d-prev" onclick="mNavigate(-1)">&#8592;</button>
             <button class="d-nav-btn d-nav-next d-hidden" id="d-next" onclick="mNavigate(1)">&#8594;</button>
@@ -388,7 +390,6 @@
                 <div class="d-bar-right">
                     <span class="d-bar-meta"><span id="d-year"></span> · <span id="d-cat"></span></span>
                     <div class="d-expand-icon">+</div>
-                    <div class="d-close-btn" onclick="event.stopPropagation(); closeDetail()">✕</div>
                 </div>
             </div>
             <div class="d-info-body">
