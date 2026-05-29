@@ -611,7 +611,7 @@
             const mainImg = document.getElementById('d-img');
             const strip = document.getElementById('d-filmstrip');
 
-            mDetailImages = [p.cover].concat((p.series || []).filter(s => s !== p.cover));
+            mDetailImages = (p.series && p.series.length > 0) ? p.series : [p.cover];
             mDetailIdx = 0;
             mInfoVisible = false;
 

@@ -7,6 +7,7 @@ window.portfolioData = [
         "desc": "",
         "cover": "images/1768055174334.jpg",
         "series": [
+            "images/1768055174334.jpg",
             "images/s_1768055174353.jpg",
             "images/s_1768055174363.jpg",
             "images/s_1768055174375.jpg",
@@ -40,6 +41,7 @@ window.portfolioData = [
         "desc": "",
         "cover": "images/1779949102545.jpg",
         "series": [
+            "images/1779949102545.jpg",
             "images/1779949102555.jpg",
             "images/1779949102565.jpg",
             "images/1779949102575.jpg"
@@ -143,6 +145,7 @@ window.portfolioData = [
         "desc": "",
         "cover": "images/1779949102821.jpg",
         "series": [
+            "images/1779949102821.jpg",
             "images/1779949102833.jpg"
         ]
     },
@@ -172,6 +175,7 @@ window.portfolioData = [
         "desc": "",
         "cover": "images/1779949102725.jpg",
         "series": [
+            "images/1779949102725.jpg",
             "images/1779949102735.jpg",
             "images/1779949102742.jpg",
             "images/1779949102752.jpg"
