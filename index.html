@@ -158,12 +158,17 @@
         }
         .d-main-stage {
             flex: 1; width: 100%; display: flex; align-items: center; justify-content: center;
-            padding: 80px; /* 增加留白，让照片像挂在画廊里 */
+            padding: 80px;
             overflow: hidden;
-        }
-        .d-main-stage {
             position: relative;
+            cursor: zoom-in;
+            transition: padding 0.45s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        #detail-view.d-zoomed .d-main-stage { padding: 0; cursor: zoom-out; }
+        #detail-view.d-zoomed .d-filmstrip { max-height: 0; opacity: 0; border-top: none; }
+        #detail-view.d-zoomed .d-info { max-height: 0 !important; border-top: none; }
+        #detail-view.d-zoomed .d-close-btn { opacity: 0.35; }
+        #detail-view.d-zoomed .d-close-btn:hover { opacity: 1; }
         .d-main-stage img {
             max-width: 100%; max-height: 100%; object-fit: contain;
             box-shadow: 0 40px 100px rgba(0,0,0,0.8);
@@ -189,10 +194,11 @@
         }
         .d-loader.hidden { display: none; }
         .d-filmstrip {
-            height: 120px; width: 100%; background: #000; 
-            border-top: 1px solid var(--border); 
+            max-height: 120px; width: 100%; background: #000;
+            border-top: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center; gap: 20px;
             overflow-x: auto; z-index: 20;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s, border-top-color 0.3s;
         }
         .thumb-item {
             height: 55px; min-width: 55px; cursor: pointer; opacity: 0.3;
@@ -494,11 +500,23 @@
         let mInfoVisible = false;
         let mSwipeReady = false;
         let dInfoExpanded = false;
+        let dZoomed = false;
 
         function toggleDesktopInfo(e) {
             if (isMobileView()) return;
             dInfoExpanded = !dInfoExpanded;
             document.getElementById('d-info-panel').classList.toggle('d-expanded', dInfoExpanded);
+        }
+
+        function toggleZoom() {
+            if (isMobileView()) return;
+            dZoomed = !dZoomed;
+            document.getElementById('detail-view').classList.toggle('d-zoomed', dZoomed);
+            // 放大时收起信息栏展开状态
+            if (dZoomed && dInfoExpanded) {
+                dInfoExpanded = false;
+                document.getElementById('d-info-panel').classList.remove('d-expanded');
+            }
         }
 
         function isMobileView() { return window.innerWidth <= 768; }
@@ -619,10 +637,15 @@
             }
 
             updateNavButtons();
-            // 重置信息栏展开状态
+            // 重置信息栏和缩放状态
             dInfoExpanded = false;
+            dZoomed = false;
             const dInfo = document.getElementById('d-info-panel');
             dInfo.classList.remove('d-expanded');
+            document.getElementById('detail-view').classList.remove('d-zoomed');
+            // 图片单击缩放（桌面端）
+            const dImg = document.getElementById('d-img');
+            dImg.onclick = toggleZoom;
             document.getElementById('detail-view').classList.add('active');
             document.body.style.overflow = 'hidden';
             // 信息栏标题入场动画
@@ -635,6 +658,8 @@
             const dInfo = document.getElementById('d-info-panel');
             dInfo.classList.remove('m-visible', 'd-expanded');
             dInfoExpanded = false;
+            dZoomed = false;
+            document.getElementById('detail-view').classList.remove('d-zoomed');
             document.body.style.overflow = 'auto';
         }
 
