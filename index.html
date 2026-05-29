@@ -26,6 +26,11 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        img {
+            -webkit-touch-callout: none;
+            -webkit-user-drag: none;
+            user-select: none;
+        }
         
         body { 
             background-color: var(--bg); 
@@ -293,7 +298,7 @@
             padding: 40px 60px 48px;
             font-family: var(--font-ui);
             font-size: 11px;
-            color: #333;
+            color: #3a3a3a;
             letter-spacing: 0.5px;
         }
 
@@ -682,6 +687,14 @@
             if (e.key === 'ArrowLeft') mNavigate(-1);
             if (e.key === 'ArrowRight') mNavigate(1);
             if (e.key === 'Escape') closeDetail();
+        });
+
+        // 版权保护：禁止图片右键保存、拖拽、长按
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.tagName === 'IMG') e.preventDefault();
+        });
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.tagName === 'IMG') e.preventDefault();
         });
 
         renderTimeline();
